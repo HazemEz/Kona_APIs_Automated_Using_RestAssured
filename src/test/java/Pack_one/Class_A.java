@@ -74,9 +74,9 @@ public class Class_A {
         int actualCount = json.getInt("data[" + index + "].prices[" + priceIndex + "].user_count");
         int actualRemaining = json.getInt("data[" + index + "].prices[" + priceIndex + "].remaining_capacity");
 
-        System.out.println("👉 Actual capacity from response: " + actualCapacity);
-        System.out.println("👉 Actual count from response: " + actualCount);
-        System.out.println("👉 Actual remaining from response: " + actualRemaining);
+        System.out.println("Actual capacity from response: " + actualCapacity);
+        System.out.println("Actual count from response: " + actualCount);
+        System.out.println("Actual remaining from response: " + actualRemaining);
 
         // Assert
         assertThat("Capacity for " + dateToCheck + " should match",

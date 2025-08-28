@@ -18,7 +18,7 @@ public class Class_A {
     @Test
     public void validate_response_code (){
 
-        given().get(base_URL + path).then().assertThat().statusCode(200);
+        given().get(base_URL + path).then().assertThat().statusCode(500);
     }
 
     @Test
@@ -34,18 +34,19 @@ public class Class_A {
                 .get(base_URL + path)
                 .then()
                 .assertThat()
-                .body("status", equalTo("success"));
+                .body("status", equalTo("succes")).and()
+                .assertThat()
+                .body("message",nullValue());
     }
 
     @Test
     void testCapacityForSpecificDate() {
+
         String dateToCheck = "2025-08-30";
-        int expectedCapacity = 11;
-        int expectedCount = 11;
+        int expectedCapacity = 15;
+        int expectedCount = 12;
         int expectedRemaining = expectedCapacity - expectedCount;
         int priceIndex = 1;
-
-
 
         // Get the JSON response
         String response = given()
@@ -67,8 +68,8 @@ public class Class_A {
 
         // Find the index of the object with matching date
         int index = json.getList("data.date").indexOf(dateToCheck);
-      //  System.out.println("👉 Found date index: " + index);
 
+        //  System.out.println("👉 Found date index: " + index);
         // Navigate to capacity inside prices[priceIndex]
         int actualCapacity = json.getInt("data[" + index + "].prices[" + priceIndex + "].capacity");
         int actualCount = json.getInt("data[" + index + "].prices[" + priceIndex + "].user_count");
@@ -89,13 +90,8 @@ public class Class_A {
 
     @Test
     void ValidateResponseTime (){
-        long expectedResponseTime = 2300L;
-        /*
-        given()
-                .get(base_URL + path)
-                .then()
-                .time(lessThan(2300L));*/
 
+        long expectedResponseTime = 1000L;
         Response response =
                 given()
                         .get(base_URL + path)
@@ -107,6 +103,12 @@ public class Class_A {
 
         assertThat("Response time should be under " + expectedResponseTime + " ms",
                 response.time(), lessThan(expectedResponseTime));
+
+                /*
+        given()
+                .get(base_URL + path)
+                .then()
+                .time(lessThan(2300L));*/
     }
 
     @Test

@@ -1,9 +1,11 @@
 package Pack_one;
 
+import SetUp.httpMethods;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -12,18 +14,40 @@ import static org.hamcrest.Matchers.*;
 
 public class Class_A {
 
-    String base_URL = "https://kona-stage-master-fbqzxc.laravel.cloud/api/v1";
+    String baseURL = "https://kona-stage-master-fbqzxc.laravel.cloud/api/v1";
     String path = "/booking/pre-requests/data/calendar";
+
+    httpMethods httpMethods = new httpMethods(baseURL,path);
+
+    // Declare Globale Variable to store the response
+    Response globalResponse;
+
+    @BeforeMethod (enabled = false)
+
+   public void SetUp (){
+        globalResponse = given().get(baseURL + path).then().extract().response();
+    }
 
     @Test
     public void validate_response_code (){
 
-        given().get(base_URL + path).then().assertThat().statusCode(500);
+     //   given().get(baseURL + path).then().assertThat().statusCode(500);
+      //  globalResponse.then().assertThat().statusCode(200);
+
+        // Declare a local variable to hold the response
+        Response returnedResponse;
+
+        // Retrieve the response of the get api and store it in the local variable
+        returnedResponse = httpMethods.setupGet();
+
+        // Use the stored value to assert the status code
+        returnedResponse.then().statusCode(200);
+
     }
 
     @Test
     public void validate_response_code_2 (){
-        Response resp_body = RestAssured.get(base_URL + path);
+        Response resp_body = RestAssured.get(baseURL + path);
         Assert.assertEquals(resp_body.statusCode(),200);
     }
 
@@ -31,7 +55,7 @@ public class Class_A {
     public void validate_body () {
 
         given()
-                .get(base_URL + path)
+                .get(baseURL + path)
                 .then()
                 .assertThat()
                 .body("status", equalTo("succes")).and()
@@ -50,7 +74,7 @@ public class Class_A {
 
         // Get the JSON response
         String response = given()
-                .get(base_URL + path)
+                .get(baseURL + path)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -94,7 +118,7 @@ public class Class_A {
         long expectedResponseTime = 1000L;
         Response response =
                 given()
-                        .get(base_URL + path)
+                        .get(baseURL + path)
                         .then()
                         .extract()
                         .response();
@@ -106,7 +130,7 @@ public class Class_A {
 
                 /*
         given()
-                .get(base_URL + path)
+                .get(baseURL + path)
                 .then()
                 .time(lessThan(2300L));*/
     }
@@ -114,7 +138,7 @@ public class Class_A {
     @Test
     void  ValidateNotEmptyArray (){
         given()
-                .get(base_URL + path)
+                .get(baseURL + path)
                 .then()
                 .statusCode(200)
                 .body("data", not(empty()));
@@ -123,7 +147,7 @@ public class Class_A {
     @Test
     void ValidateInclusionOfWomanDay (){
         given()
-                .get(base_URL + path)
+                .get(baseURL + path)
                 .then()
                 .statusCode(200)
                 .body("data", everyItem(hasKey("is_woman_day")));

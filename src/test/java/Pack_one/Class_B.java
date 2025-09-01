@@ -1,41 +1,71 @@
 package Pack_one;
 
+import SetUp.httpMethods;
+import io.restassured.response.Response;
 import org.hamcrest.Matchers;
-import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static java.util.function.Predicate.not;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasKey;
 
 public class Class_B {
-    String base_URL = "https://kona-stage-master-fbqzxc.laravel.cloud/api/v1";
+
+    String baseURL = "https://kona-stage-master-fbqzxc.laravel.cloud/api/v1";
     String path = "/user/check-uncompleted-profile";
 
+    httpMethods httpMethods = new httpMethods(baseURL,path);
+
     String ArrayOfKeys[]= {"phone","phone_code","user_type"};
+
 
     String ApprovedPhone = "111";
     String IncompletePhone = "6837688";
 
 
+    @BeforeMethod (enabled = false)
+
+    // This is a method returns a response of the passed body
+    Response Setup_POST (String Body){
+
+        return      given()
+                        .contentType("application/json")
+                        .body(Body)
+                    .when()
+                        .post(baseURL + path)
+                    .then()
+                        .extract().response();
+    }
 
     @Test
     public void validate_response_code (){
 
-        // The above string is equavelant to
-         String jsonBody = ("{\"phone\":\"111\",\"phone_code\":\"+966\",\"user_type\":\"Sports Guests\"}");
+        // Define the body passed to the setup post method
+         String jsonBody =     ("{\"phone\":\"111\",\"phone_code\":\"+966\",\"user_type\":\"Sports Guests\"}");
 
-        given()
+         // Declare a local variable to hold the response
+        Response returnedResponse ;
+
+         // Retrieve the response of the post api and store it in the local variable
+        returnedResponse = httpMethods.setupPost(jsonBody);
+
+        // Use the stored value to assert the status code
+        returnedResponse.then().statusCode(200);
+
+
+      //  returnedResponse = Setup_POST(jsonBody);
+
+      /*  given()
                 .contentType("application/json")
                 .body(jsonBody)
         .when()
-                .post(base_URL + path)
-        .then()
-                .statusCode(200);
+                .post(baseURL + path)
+        .then()*/
+        //        returnedResponse.then().statusCode(200);
 
         /*        Map<String, Object> body = new HashMap<>();
         body.put("phone", "111");
@@ -64,7 +94,7 @@ public class Class_B {
                 .contentType("application/json")
                 .body(body)
         .when()
-                .post(base_URL + path)
+                .post(baseURL + path)
         .then()
                 .assertThat().body("status", equalTo("success"));
     }
@@ -81,10 +111,10 @@ public class Class_B {
                 .contentType("application/json")
                 .body(body)
 
-                .when()
-                .post(base_URL + path)
+        .when()
+                .post(baseURL + path)
 
-                .then()
+        .then()
                 .log().status()
                 .log().body()
                 .statusCode(200)
@@ -104,7 +134,7 @@ public class Class_B {
                 .contentType("application/json")
                 .body(body)
         .when()
-                .post(base_URL + path)
+                .post(baseURL + path)
         .then()
                 .assertThat().body("message.need_complete", equalTo(false) );
     }
@@ -121,7 +151,7 @@ public class Class_B {
                 .contentType("application/json")
                 .body(body)
         .when()
-                .post(base_URL + path)
+                .post(baseURL + path)
         .then().log().body()
                 .assertThat().body("message.need_complete", equalTo(true) );
     }
@@ -138,7 +168,7 @@ public class Class_B {
                 .contentType("application/json")
                 .body(body)
         .when()
-                .post(base_URL + path)
+                .post(baseURL + path)
 
         .then().log().status()
                 .statusCode(Matchers.not(200));
@@ -157,7 +187,7 @@ public class Class_B {
                 .body(body)
 
         .when()
-                .post(base_URL + path)
+                .post(baseURL + path)
 
         .then()
                 .log().status()
@@ -176,7 +206,7 @@ public class Class_B {
                 .body(body)
 
                 .when()
-                .post(base_URL + path)
+                .post(baseURL + path)
 
                 .then()
                 .log().status()

@@ -47,18 +47,32 @@ public class Class_A {
 
     @Test
     public void validate_response_code_2 (){
+        /*
         Response resp_body = RestAssured.get(baseURL + path);
         Assert.assertEquals(resp_body.statusCode(),200);
+
+         */
+
+        Response returnedResponse = httpMethods.setupGet();
+        Assert.assertEquals(returnedResponse.statusCode(),200);
     }
 
     @Test (enabled = true)
     public void validate_body () {
 
+        /*
         given()
                 .get(baseURL + path)
                 .then()
                 .assertThat()
                 .body("status", equalTo("succes")).and()
+                .assertThat()
+                .body("message",nullValue());
+         */
+
+        Response returnedResponse = httpMethods.setupGet();
+        returnedResponse.then().assertThat()
+                .body("status", equalTo("success")).and()
                 .assertThat()
                 .body("message",nullValue());
     }
@@ -73,12 +87,18 @@ public class Class_A {
         int priceIndex = 1;
 
         // Get the JSON response
-        String response = given()
+       /* String response = given()
                 .get(baseURL + path)
                 .then()
                 .statusCode(200)
                 .extract()
                 .asString();
+
+        */
+
+        Response returnedResponse = httpMethods.setupGet();
+
+        String stringResponse = returnedResponse.then().extract().asString();
 
         System.out.println("👉 Testing capacity for date: " + dateToCheck);
         System.out.println("👉 Expected capacity: " + expectedCapacity);
@@ -88,7 +108,7 @@ public class Class_A {
         // System.out.println("👉 Price index: " + priceIndex);
 
         // Parse the response JSON
-        JsonPath json = new JsonPath(response);
+        JsonPath json = new JsonPath(stringResponse);
 
         // Find the index of the object with matching date
         int index = json.getList("data.date").indexOf(dateToCheck);
@@ -116,17 +136,23 @@ public class Class_A {
     void ValidateResponseTime (){
 
         long expectedResponseTime = 1000L;
-        Response response =
+
+        /*Response response =
                 given()
                         .get(baseURL + path)
                         .then()
                         .extract()
                         .response();
+        */
+
+        Response returnedResponse = httpMethods.setupGet();
+
+
         System.out.println("The expected response time is " + expectedResponseTime + " ms");
-        System.out.println("The actual response time is " + response.time() + " ms");
+        System.out.println("The actual response time is " + returnedResponse.time() + " ms");
 
         assertThat("Response time should be under " + expectedResponseTime + " ms",
-                response.time(), lessThan(expectedResponseTime));
+                returnedResponse.time(), lessThan(expectedResponseTime));
 
                 /*
         given()
@@ -137,19 +163,28 @@ public class Class_A {
 
     @Test
     void  ValidateNotEmptyArray (){
+        /*
         given()
                 .get(baseURL + path)
                 .then()
                 .statusCode(200)
                 .body("data", not(empty()));
+
+         */
+        Response returnedResponse = httpMethods.setupGet();
+        returnedResponse.then().statusCode(200).body("data",not(empty()));
+
     }
 
     @Test
     void ValidateInclusionOfWomanDay (){
-        given()
+       /* given()
                 .get(baseURL + path)
                 .then()
                 .statusCode(200)
                 .body("data", everyItem(hasKey("is_woman_day")));
+                */
+        Response returnedResponse = httpMethods.setupGet();
+        returnedResponse.then().statusCode(200).body("data",everyItem((hasKey("is_woman_day"))));
     }
 }

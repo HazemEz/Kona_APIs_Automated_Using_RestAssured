@@ -85,11 +85,12 @@ public class Class_B {
     @Test
     public void validate_response_body (){
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("phone", ApprovedPhone);
-        body.put("phone_code", "+966");
-        body.put("user_type", "Sports Guests");
+        Map<String, Object> jsonBody = new HashMap<>();
+        jsonBody.put("phone", ApprovedPhone);
+        jsonBody.put("phone_code", "+966");
+        jsonBody.put("user_type", "Sports Guests");
 
+        /*
         given()
                 .contentType("application/json")
                 .body(body)
@@ -97,19 +98,25 @@ public class Class_B {
                 .post(baseURL + path)
         .then()
                 .assertThat().body("status", equalTo("success"));
+
+         */
+
+        Response returnedResponse = httpMethods.setupPost(jsonBody.toString());
+
+        returnedResponse.then().assertThat().body("status", equalTo("success"));
     }
 
     @Test
     public void validate_inclusion_of_key (){
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("phone", "111");
-        body.put("phone_code", "+966");
-        body.put("user_type", "Sports Guests");
+        Map<String, Object> jsonBody = new HashMap<>();
+        jsonBody.put("phone", "111");
+        jsonBody.put("phone_code", "+966");
+        jsonBody.put("user_type", "Sports Guests");
 
-        given()
+       /* given()
                 .contentType("application/json")
-                .body(body)
+                .body(jsonBody)
 
         .when()
                 .post(baseURL + path)
@@ -119,17 +126,21 @@ public class Class_B {
                 .log().body()
                 .statusCode(200)
                 .assertThat().body("message",hasKey("need_complete"));
+                */
+        Response returnedResponse = httpMethods.setupPost(jsonBody.toString());
+
+        returnedResponse.then().assertThat().body("message",hasKey("need_complete"));
     }
 
 
     @Test
     public void validate_response_body_for_approved_profile (){
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("phone", "111");
-        body.put("phone_code", "+966");
-        body.put("user_type", "Sports Guests");
-
+        Map<String, Object> jsonBody = new HashMap<>();
+        jsonBody.put("phone", "111");
+        jsonBody.put("phone_code", "+966");
+        jsonBody.put("user_type", "Sports Guests");
+/*
         given()
                 .contentType("application/json")
                 .body(body)
@@ -137,16 +148,22 @@ public class Class_B {
                 .post(baseURL + path)
         .then()
                 .assertThat().body("message.need_complete", equalTo(false) );
+
+ */
+        Response returnedResponse = httpMethods.setupPost(jsonBody.toString());
+
+        returnedResponse.then().assertThat().body("message.need_complete", equalTo(false) );
+
     }
 
     @Test
     public void validate_response_body_for_incomplete_profile (){
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("phone", IncompletePhone);
-        body.put("phone_code", "+966");
-        body.put("user_type", "Sports Guests");
-
+        Map<String, Object> jsonBody = new HashMap<>();
+        jsonBody.put("phone", IncompletePhone);
+        jsonBody.put("phone_code", "+966");
+        jsonBody.put("user_type", "Sports Guests");
+/*
         given()
                 .contentType("application/json")
                 .body(body)
@@ -154,37 +171,51 @@ public class Class_B {
                 .post(baseURL + path)
         .then().log().body()
                 .assertThat().body("message.need_complete", equalTo(true) );
+                */
+        Response returnedResponse = httpMethods.setupPost(jsonBody.toString());
+
+        returnedResponse.then().assertThat().body("message.need_complete", equalTo(true ));
+
     }
 
     @Test
     public void validate_required_phone_key (){
 
-        Map<String, Object> body = new HashMap<>();
+        Map<String, Object> jsonBody = new HashMap<>();
      //   body.put("phone", "111");
-        body.put("phone_code", "+966");
-        body.put("user_type", "Sports Guests");
+        jsonBody.put("phone_code", "+966");
+        jsonBody.put("user_type", "Sports Guests");
 
+        /*
         given()
                 .contentType("application/json")
-                .body(body)
+                .body(jsonBody)
         .when()
                 .post(baseURL + path)
 
         .then().log().status()
                 .statusCode(Matchers.not(200));
+
+         */
+        Response returnedResponse = httpMethods.setupPost(jsonBody.toString());
+
+        returnedResponse.then().log().status()
+                .statusCode(Matchers.not(200));
+
     }
 
     @Test
     public void validate_required_phone_code_key (){
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("phone", "111");
-      //  body.put("phone_code", "+966");
-        body.put("user_type", "Sports Guests");
+        Map<String, Object> jsonBody = new HashMap<>();
+        jsonBody.put("phone", "111");
+      //  jsonBody.put("phone_code", "+966");
+        jsonBody.put("user_type", "Sports Guests");
 
+        /*
         given()
                 .contentType("application/json")
-                .body(body)
+                .body(jsonBody)
 
         .when()
                 .post(baseURL + path)
@@ -192,24 +223,35 @@ public class Class_B {
         .then()
                 .log().status()
                 .statusCode(Matchers.not(200));
+         */
+        Response returnedResponse = httpMethods.setupPost(jsonBody.toString());
+
+        returnedResponse.then().log().status()
+                .statusCode(Matchers.not(200));
     }
     @Test
     public void validate_not_required_type_key (){
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("phone", "111");
-        body.put("phone_code", "+966");
+        Map<String, Object> jsonBody = new HashMap<>();
+        jsonBody.put("phone", "111");
+        jsonBody.put("phone_code", "+966");
         //body.put("user_type", "Sports Guests");
-
+/*
         given()
                 .contentType("application/json")
-                .body(body)
+                .body(jsonBody)
 
                 .when()
                 .post(baseURL + path)
 
                 .then()
                 .log().status()
+                .statusCode(200);
+
+ */
+        Response returnedResponse = httpMethods.setupPost(jsonBody.toString());
+
+        returnedResponse.then().log().status()
                 .statusCode(200);
     }
 
